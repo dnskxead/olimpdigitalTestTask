@@ -10,7 +10,6 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // Біндимо інтерфейс до конкретної реалізації
         $this->app->bind(CarAvailabilityServiceInterface::class, CarAvailabilityService::class);
     }
 
