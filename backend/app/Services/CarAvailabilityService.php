@@ -6,6 +6,7 @@ use App\Models\Car;
 use App\Interfaces\CarAvailabilityServiceInterface;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Collection;
 
 class CarAvailabilityService implements CarAvailabilityServiceInterface
 {
@@ -22,26 +23,40 @@ class CarAvailabilityService implements CarAvailabilityServiceInterface
                       ->where('start_date', '<=', $periodEnd->toDateTimeString())
                       ->where('end_date', '>=', $periodStart->toDateTimeString())
                       ->orderBy('start_date', 'asc');
-            }])
+            }, 'carModel.translations'])
             ->get();
 
         $result = [];
         foreach ($cars as $car) {
             $freeDaysCount = $this->calculateFreeDaysCount($car, $periodStart, $periodEnd);
-            $totalDays = $periodStart->diffInDays($periodEnd) + 1;
+            $totalDays = max(1, $periodStart->diffInDays($periodEnd) + 1);
+            $displayName = $this->resolveCarName($car->carModel?->translations ?? collect());
+            $serviceCount = $car->bookings->where('source', 'car-service')->count();
 
             $result[] = [
-                'id' => $car->car_id,
-                'name' => $car->name ?? 'Unknown',
-                'year' => $car->year ?? null,
-                'number' => $car->number ?? null,
-                'free' => $freeDaysCount,
-                'busy' => $totalDays - $freeDaysCount,
-                'all' => $totalDays,
+                'id'        => $car->car_id,
+                'name'      => $displayName,
+                'year'      => $car->attribute_year ? (int) $car->attribute_year : null,
+                'number'    => $car->registration_number ?? null,
+                'body_type' => $car->car_body_id ? (string) $car->car_body_id : null,
+                'service'   => $serviceCount,
+                'free'      => (int) $freeDaysCount,
+                'busy'      => (int) max(0, $totalDays - $freeDaysCount),
+                'all'       => (int) $totalDays,
             ];
         }
 
         return $result;
+    }
+
+    private function resolveCarName(Collection $translations): string
+    {
+        $preferredTranslation = $translations->firstWhere('lang', 'en')
+            ?? $translations->firstWhere('name');
+
+        return $preferredTranslation?->name
+            ?? $translations->first()?->name
+            ?? 'Unknown';
     }
 
     private function calculateFreeDaysCount(Car $car, Carbon $periodStart, Carbon $periodEnd): int
@@ -58,8 +73,8 @@ class CarAvailabilityService implements CarAvailabilityServiceInterface
             ];
 
             foreach ($car->bookings as $booking) {
-                $bStart = Carbon::parse($booking->start_date)->subHours(2);
-                $bEnd = Carbon::parse($booking->end_date)->subHours(2);
+                $bStart = Carbon::parse($booking->start_date)->startOfMinute();
+                $bEnd = Carbon::parse($booking->end_date)->startOfMinute();
 
                 // if time is not 09:00 - 21:00, skip
                 if ($bEnd->lte($dayStart) || $bStart->gte($dayEnd)) {
