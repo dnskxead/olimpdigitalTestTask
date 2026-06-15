@@ -11,12 +11,14 @@ cd <НАЗВА_ПАПКИ_ПРОЄКТУ>
 Оскільки папка vendor відсутня в репозиторії, встановіть PHP-залежності через тимчасовий Docker-контейнер (офіційний метод Laravel):
 
 
+```
 docker run --rm \
     -u "$(id -u):$(id -g)" \
     -v "$(pwd):/var/www/html" \
     -w /var/www/html \
     laravelsail/php82-composer:latest \
     composer install --ignore-platform-reqs
+```
 ### 4. Запуск контейнерів
 Підніміть середовище Sail у фоновому режимі:
 
