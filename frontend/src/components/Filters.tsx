@@ -21,34 +21,33 @@ export const Filters: React.FC = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ padding: '15px', background: '#f9f9f9', marginBottom: '20px' }}>
-            <div style={{ display: 'inline-block', marginRight: '20px' }}>
-                <label>Years</label><br />
-                <select 
+        <form className="filters" onSubmit={handleSubmit}>
+            <div className="filter-grid">
+                <label className="filter-field">
+                    <span>Years</span>
+                    <select
                     ref={selectYearRef}
-                    multiple 
-                    value={[year.toString()]} 
+                    multiple
+                    value={[year.toString()]}
                     onChange={(e) => setYear(Number(e.target.value))}
-                    style={{ width: '100px', height: '100px' }}
                 >
                     {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                </select>
-            </div>
+                    </select>
+                </label>
 
-            <div style={{ display: 'inline-block' }}>
-                <label>Months</label><br />
-                <select 
-                    multiple 
-                    value={[month.toString()]} 
+                <label className="filter-field">
+                    <span>Months</span>
+                    <select
+                    multiple
+                    value={[month.toString()]}
                     onChange={(e) => setMonth(Number(e.target.value))}
-                    style={{ width: '100px', height: '100px' }}
                 >
                     {MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
-                </select>
+                    </select>
+                </label>
             </div>
-            
-            <br />
-            <button type="submit" style={{ marginTop: '15px' }}>Show data</button>
+
+            <button className="primary-button" type="submit">Show data</button>
         </form>
     );
 };

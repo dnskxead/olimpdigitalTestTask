@@ -10,19 +10,21 @@ export const AvailabilityTable: React.FC = () => {
         return cars.reduce((sum, car) => sum + car.free, 0);
     }, [cars]);
 
-    if (loading) return <p>Завантаження даних...</p>;
-    if (error) return <p style={{ color: 'red' }}>{error}</p>;
-    if (cars.length === 0) return <p>Оберіть період і натисніть "Show data"</p>;
+    if (loading) return <p className="state-message">Завантаження даних...</p>;
+    if (error) return <p className="state-message state-message-error">{error}</p>;
+    if (cars.length === 0) return <p className="state-message">Оберіть період і натисніть "Show data"</p>;
 
     return (
-        <div>
-            <h3>Results (Total Cars: {cars.length} | Total Free Days: {totalFreeDays})</h3>
-            <div style={{ overflowX: 'auto' }}>
-                <table
-                    border={1}
-                    cellPadding={8}
-                    style={{ width: '100%', minWidth: 980, borderCollapse: 'collapse', textAlign: 'center' }}
-                >
+        <section className="results">
+            <div className="results-header">
+                <h2>Results</h2>
+                <div className="summary">
+                    <span>All cars: {cars.length}</span>
+                    <span>Total free days: {totalFreeDays}</span>
+                </div>
+            </div>
+            <div className="table-scroll">
+                <table className="availability-table">
                     <thead>
                         <tr>
                             <th>id</th>
@@ -34,7 +36,7 @@ export const AvailabilityTable: React.FC = () => {
                             <th>body type</th>
                             <th>create</th>
                             <th>car types</th>
-                            <th style={{ backgroundColor: '#e2f0d9' }}>free</th>
+                            <th className="free-column">free</th>
                             <th>service</th>
                             <th>busy</th>
                             <th>all</th>
@@ -52,7 +54,7 @@ export const AvailabilityTable: React.FC = () => {
                                 <td>{car.body_type}</td>
                                 <td>{car.create}</td>
                                 <td>{car.car_types}</td>
-                                <td style={{ backgroundColor: '#e2f0d9', fontWeight: 'bold' }}>{car.free}</td>
+                                <td className="free-column">{car.free}</td>
                                 <td>{car.service}</td>
                                 <td>{car.busy}</td>
                                 <td>{car.all}</td>
@@ -61,6 +63,6 @@ export const AvailabilityTable: React.FC = () => {
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
     );
 };

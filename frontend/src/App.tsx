@@ -6,11 +6,13 @@ import { AvailabilityTable } from './components/AvailabilityTable';
 const App: React.FC = () => {
     return (
         <CarProvider>
-            <div style={{ maxWidth: '1000px', margin: '0 auto', fontFamily: 'sans-serif' }}>
-                <h2>Car Availability Dashboard</h2>
+            <main className="app-shell">
+                <header className="app-header">
+                    <h1>Car Availability Table</h1>
+                </header>
                 <Filters />
                 <AvailabilityTable />
-            </div>
+            </main>
         </CarProvider>
     );
 };
