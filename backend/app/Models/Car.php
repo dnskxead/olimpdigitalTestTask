@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Car extends Model
 {
     protected $table = 'rc_cars';
+
     protected $primaryKey = 'car_id';
 
     public function carModel(): BelongsTo
@@ -19,5 +20,10 @@ class Car extends Model
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'car_id', 'car_id');
+    }
+
+    public function translations(): HasMany
+    {
+        return $this->hasMany(CarTranslation::class, 'car_id', 'car_id');
     }
 }
