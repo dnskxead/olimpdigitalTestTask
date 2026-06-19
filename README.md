@@ -30,3 +30,11 @@ docker run --rm \
 
 ### Імпорт дампу бази даних безпосередньо в контейнер MySQL
 ``` ./vendor/bin/sail mysql < database/seeders/dump.sql ```
+
+
+### Для запуску frontend частини, якщо немає вільного порту
+```
+npm install
+npm run dev
+```
+
